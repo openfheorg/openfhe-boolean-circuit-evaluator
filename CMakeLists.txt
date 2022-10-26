@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(OpenFHE)
+message( STATUS "Using OpenFHE_LIBDIR=${OpenFHE_LIBDIR}" )
+
 
 set( CMAKE_CXX_FLAGS ${OpenFHE_CXX_FLAGS} )
 

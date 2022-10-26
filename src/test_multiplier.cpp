@@ -70,8 +70,8 @@
 //
 
 bool test_multiplier(std::string inFname, unsigned int numTestLoops,
-                     lbcrypto::BINFHEPARAMSET set,
-                     lbcrypto::BINFHEMETHOD method) {
+                     lbcrypto::BINFHE_PARAMSET set,
+                     lbcrypto::BINFHE_METHOD method) {
   // BLU_test_multiplier: tests BLU with multiplier programs
   std::cout << "Opening file " << inFname << " for test_multiplier parameters"
             << std::endl;

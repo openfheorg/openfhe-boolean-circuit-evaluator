@@ -68,7 +68,7 @@
 //
 
 bool test_adder(std::string inFname, unsigned int numTestLoops,
-                lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method) {
+                lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
   // BLU_test_adder: tests BLU with adder programs
   std::cout << "test_adder: Opening file " << inFname
             << " for test_adder parameters" << std::endl;

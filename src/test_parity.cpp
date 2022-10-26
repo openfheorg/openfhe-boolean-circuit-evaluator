@@ -67,7 +67,7 @@
 //
 
 bool test_parity(std::string inFname, unsigned int numTestLoops,
-                 lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method) {
+                 lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
   // BLU_test_parity: tests BLU with parity programs
   std::cout << "test_parity: Opening file " << inFname
             << " for test_parity parameters" << std::endl;

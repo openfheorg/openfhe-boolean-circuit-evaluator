@@ -42,7 +42,7 @@ using NetList = std::map<std::string, GateNameList>;
 
 class Circuit {
  public:
-  Circuit(lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method);
+  Circuit(lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method);
   ~Circuit();
   bool ReadFile(std::string cktName);
   void Reset(void);

@@ -65,8 +65,8 @@ int main(int argc, char **argv) {
 
   unsigned int num_test_loops = 10;
 
-  lbcrypto::BINFHEPARAMSET set(lbcrypto::STD128_OPT);
-  lbcrypto::BINFHEMETHOD method(lbcrypto::GINX);
+  lbcrypto::BINFHE_PARAMSET set(lbcrypto::STD128_OPT);
+  lbcrypto::BINFHE_METHOD method(lbcrypto::GINX);
   bool verbose(false);
 
   parse_inputs(argc, argv, &assemble_flag, &gen_fan_flag, &analyze_flag,

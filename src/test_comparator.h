@@ -31,7 +31,7 @@
 
 // function declaration
 bool test_comparator(std::string outputFname, unsigned int num_test_loops,
-                     lbcrypto::BINFHEPARAMSET set,
-                     lbcrypto::BINFHEMETHOD method);
+                     lbcrypto::BINFHE_PARAMSET set,
+                     lbcrypto::BINFHE_METHOD method);
 
 #endif  // SRC_TEST_COMPARATOR_H_

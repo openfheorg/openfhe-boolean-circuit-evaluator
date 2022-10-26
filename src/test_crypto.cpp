@@ -74,7 +74,7 @@
 //
 
 bool test_crypto(std::string inFname, unsigned int numTestLoops,
-                 lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method) {
+                 lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
   // BLU_test_crypto: tests BLU with crypto programs
   std::cout << "test_crypto: Opening file " << inFname
             << " for test_crypto parameters" << std::endl;

@@ -36,8 +36,8 @@ Gate::~Gate(void) {}
 void Gate::Reset(void) {}
 
 void Gate::Evaluate(const GateEvalParams &gep) {
-  DEBUG_FLAG(false);
-  DEBUG("in evaluate for gate " << this->name);
+  OPENFHE_DEBUG_FLAG(false);
+  OPENFHE_DEBUG("in evaluate for gate " << this->name);
 
   bool all_ready(true);
 
@@ -52,20 +52,20 @@ void Gate::Evaluate(const GateEvalParams &gep) {
     std::cerr << "error, executing gate " << this->name
               << " but inputs not ready!" << std::endl;
   }
-  DEBUGEXP(this->encin.size());
-  DEBUGEXP(plaintext_flag);
-  DEBUGEXP(encrypted_flag);
+  OPENFHE_DEBUGEXP(this->encin.size());
+  OPENFHE_DEBUGEXP(plaintext_flag);
+  OPENFHE_DEBUGEXP(encrypted_flag);
   if (encrypted_flag) {
-    DEBUGEXP(this->encin[0]);
+    OPENFHE_DEBUGEXP(this->encin[0]);
     lbcrypto::LWEPlaintext res;
     gep.cc.Decrypt(gep.sk, this->encin[0], &res);
-    DEBUGEXP(res);
+    OPENFHE_DEBUGEXP(res);
     if (this->encin.size() > 1) {
       gep.cc.Decrypt(gep.sk, this->encin[1], &res);
-      DEBUGEXP(res);
+      OPENFHE_DEBUGEXP(res);
     }
   }
-  DEBUGEXP(this->name);
+  OPENFHE_DEBUGEXP(this->name);
 
   switch (this->op) {
     case (GateEnum::INPUT):
@@ -176,7 +176,7 @@ void Gate::Evaluate(const GateEvalParams &gep) {
       if (plaintext_flag) {
         plainout.resize(1);
         plainout[0] = this->plainin[0] ^ this->plainin[1];
-        DEBUGEXP(plainout[0]);
+        OPENFHE_DEBUGEXP(plainout[0]);
       }
 
       if (encrypted_flag) {
@@ -192,7 +192,7 @@ void Gate::Evaluate(const GateEvalParams &gep) {
         auto foo = gep.cc.EvalBinGate(lbcrypto::OR, tmp1, tmp2);
 #endif
         encout[0] = foo;
-        DEBUGEXP(encout[0]);
+        OPENFHE_DEBUGEXP(encout[0]);
         if (verify_flag) {
           lbcrypto::LWEPlaintext res;
           gep.cc.Decrypt(gep.sk, encout[0], &res);

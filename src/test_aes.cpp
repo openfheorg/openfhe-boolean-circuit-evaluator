@@ -73,7 +73,7 @@
 // generalize input output: in1 in2 should become one 2d vector. #shoudl be 0, 1
 
 bool test_aes(std::string inFname, unsigned int numTestLoops,
-              lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method) {
+              lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
   // BLU_test_aes: tests BLU with aes programs
   std::cout << "test_aes: Opening file " << inFname
             << " for test_aes parameters" << std::endl;

@@ -62,7 +62,7 @@ std::string UintVec2str(std::vector<unsigned int> in);
 
 void parse_inputs(int argc, char **argv, bool *assemble_flag,
                   bool *gen_fan_flag, bool *analyze_flag, bool *verbose,
-                  lbcrypto::BINFHEPARAMSET *set, lbcrypto::BINFHEMETHOD *method,
+                  lbcrypto::BINFHE_PARAMSET *set, lbcrypto::BINFHE_METHOD *method,
                   unsigned int *n_cases, unsigned int *num_test_loops);
 
 #endif  // SRC_UTILS_H_

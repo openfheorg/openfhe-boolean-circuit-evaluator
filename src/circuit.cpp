@@ -32,7 +32,7 @@
 #include "utils.h"
 #include <boost/range/adaptor/reversed.hpp>
 
-Circuit::Circuit(lbcrypto::BINFHEPARAMSET set, lbcrypto::BINFHEMETHOD method) {
+Circuit::Circuit(lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
   // clear all flags
   this->plaintext_flag = false;  // if true perform plaintext logic
   this->encrypted_flag = false;  // if true perform encrypted logic
@@ -355,7 +355,7 @@ bool Circuit::ReadFile(std::string inFname) {
 }
 
 void Circuit::Reset(void) {
-  DEBUG_FLAG(false);
+  OPENFHE_DEBUG_FLAG(false);
 
   // clear counters
   this->n_input_gates = 0;
@@ -398,12 +398,12 @@ void Circuit::Reset(void) {
   // doneGates.reserve(maxGates);
   doneGates.clear();
 
-  DEBUG("reset: before waiting gates size: " << waitingGates.size());
+  OPENFHE_DEBUG("reset: before waiting gates size: " << waitingGates.size());
   // load all wirenames to waitingWire queue from netlist
   for (auto const &w : this->nl) {
     waitingWireNames.push_back(w.first);
   }
-  DEBUG("reset: now waiting wirename size: " << waitingWireNames.size());
+  OPENFHE_DEBUG("reset: now waiting wirename size: " << waitingWireNames.size());
 }
 
 bool Circuit::_parse_input(Inputs input, std::string input_name,
@@ -441,7 +441,7 @@ void Circuit::_parse_output(std::string out_name, std::string bit_name,
 }
 
 void Circuit::SetInput(Inputs input, bool verbose) {
-  DEBUG_FLAG(false);
+  OPENFHE_DEBUG_FLAG(false);
 
   // parse input;
   // determine input dimensions
@@ -467,7 +467,7 @@ void Circuit::SetInput(Inputs input, bool verbose) {
   this->n_input_gates = 0;
   // for each gate on input gate list
   for (auto g : this->inputGates) {
-    DEBUG("parsing gate " << g.name);
+    OPENFHE_DEBUG("parsing gate " << g.name);
     auto this_input = g.inWireNames[0];
 
     auto this_bit = g.inWireNames[1];
@@ -481,7 +481,7 @@ void Circuit::SetInput(Inputs input, bool verbose) {
       w.setName(outName);
       w.setValue(value);
 
-      DEBUG("in setInput setting wire " << outName << " to " << value);
+      OPENFHE_DEBUG("in setInput setting wire " << outName << " to " << value);
 
       // find fanout
       auto it = this->nl.find(outName);
@@ -558,7 +558,7 @@ Outputs Circuit::Clock(void) {
 }
 
 void Circuit::_CircuitManager(void) {
-  DEBUG_FLAG(false);
+  OPENFHE_DEBUG_FLAG(false);
   TIC(auto t_tot);
   unsigned int cleanup_time = 0;
   unsigned int total_time = 0;
@@ -574,15 +574,15 @@ void Circuit::_CircuitManager(void) {
 
   // get wire (note if list is empty, then move on to processing gates
   // and need to return to  wait
-  DEBUG("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  OPENFHE_DEBUG("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   while (!this->activeWires.empty()) {
-    DEBUG("CM top wg: " << waitingGates.size()
+    OPENFHE_DEBUG("CM top wg: " << waitingGates.size()
                         << " aw: " << activeWires.size());
 
     auto inw = this->activeWires.front();
     this->activeWires.pop_front();
-    // DEBUG("after pop # active wire "<< activeWires.size());
-    // DEBUG("### check wire "<<inw.getName() );
+    // OPENFHE_DEBUG("after pop # active wire "<< activeWires.size());
+    // OPENFHE_DEBUG("### check wire "<<inw.getName() );
     if (waitingGates.empty()) {
       std::cerr << "error in CircuitManager: empty watingGates queue "
                 << std::endl;
@@ -592,14 +592,14 @@ void Circuit::_CircuitManager(void) {
     while (!wire_done && !waitingGates.empty()) {  // short ckt for wire done
       auto g = waitingGates.front();
       waitingGates.pop_front();
-      // DEBUG("  ## examining gate "<<g.name);
+      // OPENFHE_DEBUG("  ## examining gate "<<g.name);
       auto n_in = g.inWireNames.size();
 
       bool gateReady(true);
       auto f = inw.getFanoutGates();
       auto it = std::find(f.begin(), f.end(), g.name);
       if (it != f.end()) {  // if g.name in inw.fanoutGates
-        DEBUG("  found gate " << g.name << " in fanout");
+        OPENFHE_DEBUG("  found gate " << g.name << " in fanout");
         for (uint ix = 0; ix < n_in; ix++) {
           if (g.inWireNames[ix] == inw.getName()) {
             // mark this gate input ready
@@ -607,26 +607,26 @@ void Circuit::_CircuitManager(void) {
             // copy the value and the ciphertext
             g.encin[ix] = inw.getCipherText();
             g.plainin[ix] = inw.getValue();
-            // DEBUG("    input "<<ix );
+            // OPENFHE_DEBUG("    input "<<ix );
           }
           gateReady &= g.ready[ix];  // any unready inputs turn this off
         }
         if (gateReady) {
           this->executingGates.push_back(g);
-          DEBUG("  ->execute:  " << this->executingGates.size());
+          OPENFHE_DEBUG("  ->execute:  " << this->executingGates.size());
         } else {
           examinedGates.push_back(g);
-          DEBUG("  ->examined: " << examinedGates.size());
+          OPENFHE_DEBUG("  ->examined: " << examinedGates.size());
         }
         // remove this gate from this wire’s fanout
         inw.updateFanoutGates(g.name);
-        // DEBUG("  updated wire fanout on "<<inw.getName()<< " now length "
+        // OPENFHE_DEBUG("  updated wire fanout on "<<inw.getName()<< " now length "
         //		 <<inw.getFanoutGates().size());
         if (inw.getNumberFanoutGates() != 0) {
-          // DEBUG("  wire not done");
+          // OPENFHE_DEBUG("  wire not done");
         } else {
           wire_done = true;
-          // DEBUG("  wire done");
+          // OPENFHE_DEBUG("  wire done");
         }
       } else {
         // gate was not in current wire fanout.
@@ -635,31 +635,31 @@ void Circuit::_CircuitManager(void) {
     }
     TIC(auto t_clean);
     // copy examined gates to waitingGates
-    DEBUG("cycling gates #executing " << executingGates.size());
-    DEBUG("cycling gates #examined " << examinedGates.size());
-    DEBUG("cycling gates #waiting " << waitingGates.size());
-    DEBUG("cycling gataes #done " << doneGates.size());
+    OPENFHE_DEBUG("cycling gates #executing " << executingGates.size());
+    OPENFHE_DEBUG("cycling gates #examined " << examinedGates.size());
+    OPENFHE_DEBUG("cycling gates #waiting " << waitingGates.size());
+    OPENFHE_DEBUG("cycling gataes #done " << doneGates.size());
 
     for (auto it : boost::adaptors::reverse(examinedGates)) {
       waitingGates.push_front(it);
     }
     examinedGates.clear();
-    DEBUG("cycled gates # waiting now " << waitingGates.size());
+    OPENFHE_DEBUG("cycled gates # waiting now " << waitingGates.size());
 
     // push wire onto back of activeWires queue
     if (!wire_done) {
       activeWires.push_front(inw);
-      DEBUG("pushing wire onto active " << inw.getName());
+      OPENFHE_DEBUG("pushing wire onto active " << inw.getName());
     } else {
-      DEBUG("wire done " << inw.getName());
+      OPENFHE_DEBUG("wire done " << inw.getName());
     }
-    DEBUG("bottom of while waiting gates size: " << waitingGates.size()
+    OPENFHE_DEBUG("bottom of while waiting gates size: " << waitingGates.size()
                                                  << " wire done " << wire_done);
 
-    DEBUG("------------------");
+    OPENFHE_DEBUG("------------------");
     cleanup_time += TOC_MS(t_clean);
   }  // while active wire is not empty
-  DEBUG("Manager Done Cycle");
+  OPENFHE_DEBUG("Manager Done Cycle");
   // active wire was empty. return so we can cycle again.
   total_time += TOC_MS(t_tot);
   // std::cout<<std::endl<<"tot time "<<total_time <<"cleanup time
@@ -667,15 +667,15 @@ void Circuit::_CircuitManager(void) {
 }
 
 void Circuit::_ExecuteGates(void) {
-  DEBUG_FLAG(false);
+  OPENFHE_DEBUG_FLAG(false);
   // For each gate on the executeGate queue in parallel
-  DEBUG("Execute start Cycle");
+  OPENFHE_DEBUG("Execute start Cycle");
 
   // all gates on the executingGates queue can be Evaluated in parallel
 #if 0  // requires c++ 9.0 to compile  note could try using  __GNUC__ >8
 #pragma omp parallel for schedule(dynamic)
   for (Gate & g: executingGates){
-	DEBUG("processing gate "<<g.name);
+	OPENFHE_DEBUG("processing gate "<<g.name);
 	g.Evaluate(this->gep);
   }
 #else
@@ -686,7 +686,7 @@ void Circuit::_ExecuteGates(void) {
       for (Gate &g : executingGates) {
 #pragma omp task shared(g)
         {
-          DEBUG("processing gate " << g.name);
+          OPENFHE_DEBUG("processing gate " << g.name);
           g.Evaluate(this->gep);
         }
       }
@@ -694,12 +694,12 @@ void Circuit::_ExecuteGates(void) {
   }
 #endif
 
-  DEBUG("done parallel gate");
+  OPENFHE_DEBUG("done parallel gate");
   while (!this->executingGates.empty()) {
     // pop gate
     auto g = this->executingGates.front();
     this->executingGates.pop_front();
-    // DEBUG("execute gate" <<g.name);
+    // OPENFHE_DEBUG("execute gate" <<g.name);
     // process gate
     // g.Evaluate(this->plaintext_flag, this->encrypted_flag,
     // this->verify_flag);
@@ -737,7 +737,7 @@ void Circuit::_ExecuteGates(void) {
       auto outnames = g.outWireNames;
       unsigned int out_ix(0);
       for (auto outname : outnames) {
-        DEBUG("  activating gate " << g.name << " output wire " << outname);
+        OPENFHE_DEBUG("  activating gate " << g.name << " output wire " << outname);
 
         Wire w;
         w.setName(outname);
@@ -774,7 +774,7 @@ void Circuit::_ExecuteGates(void) {
 
         // push onto activeWires queue
         this->activeWires.push_back(w);
-        DEBUG("  pushed onto active queue size" << activeWires.size());
+        OPENFHE_DEBUG("  pushed onto active queue size" << activeWires.size());
       }  // for outnames
     } else {
       // gate is output
@@ -792,10 +792,10 @@ void Circuit::_ExecuteGates(void) {
       }
     }  // if gate is not OUTPUT
 
-    DEBUG("  gate " << g.name << " done");
+    OPENFHE_DEBUG("  gate " << g.name << " done");
     this->doneGates.push_back(g);  // done with this gate
   }                                // end while
-  DEBUG("Execute done Cycle");
+  OPENFHE_DEBUG("Execute done Cycle");
   std::cout << "\rProcessing: " << this->doneGates.size() << " of "
             << this->allGates.size() << std::flush;
 }
