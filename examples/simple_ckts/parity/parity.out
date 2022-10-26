@@ -1,0 +1,46 @@
+# number input1 bits 9
+# number input2 bits 0
+# number output1 bits 2
+# Do not edit the top 3 lines!
+# parity generator/checker 8 bits
+# inputs:
+# In0,0 .. In0,7 are 8 bits input with In0,8 as 0 for input (or cascate) 
+# outputs
+# Out0 is even Out1 is odd
+#
+R0 = LOAD(In1,0)
+R1 = LOAD(In1,1)
+R2 = LOAD(In1,2)
+R3 = LOAD(In1,3)
+R4 = LOAD(In1,4)
+R5 = LOAD(In1,5)
+R6 = LOAD(In1,6)
+R7 = LOAD(In1,7)
+R8 = LOAD(In1,8)
+#
+R9 = NOT(R0)
+R10 = NOT(R1)
+R11 = NOT(R2)
+R12 = NOT(R3)
+R13 = NOT(R4)
+R14 = NOT(R5)
+R15 = NOT(R6)
+R16 = NOT(R7)
+R17 = NOT(R8)
+#
+R18 = XOR(R9, R10)
+R19 = XOR(R11, R12)
+#
+R20 = XOR(R13, R14)
+R21 = XOR(R15, R16)
+#
+R22 = XOR(R18, R19)
+R23 = XOR(R20, R21)
+#
+R24 = XOR(R22, R23)
+#
+R25 = XOR(R24, R17)
+R26 = NOT(R25)
+#
+Out0 = STORE(R25)
+Out1 = STORE(R26)

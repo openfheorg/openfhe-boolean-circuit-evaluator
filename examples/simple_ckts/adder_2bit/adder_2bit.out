@@ -1,0 +1,42 @@
+# number input1 bits 2
+# number input2 bits 2
+# number output1 bits 3
+# Do not edit the top 3 lines!
+# 2 bit adder
+# Q = a + b
+# CO is carry out
+#
+# inputs:
+# In0,0 In0,1 are a0 , b0
+# In1,0 In1,1 are a1 , b1
+# outputs
+# Out0 is Q0, Out1 is Q1, Out2 is CO
+#
+R0 = LOAD(In1,0)
+R1 = LOAD(In1,1)
+#
+R2 = LOAD(In2,0)
+R3 = LOAD(In2,1)
+#
+R4 = XOR(R0, R2)
+R5 = AND(R0, R2)
+#
+Out0 = STORE(R4)
+#
+R6 = XOR(R1, R3)
+R7 = AND(R1, R3)
+#
+R8 = XOR(R5, R6)
+#
+Out1 = STORE(R8)
+#
+R9 = AND(R5, R6)
+#
+R10 = OR(R9, R7)
+Out2 = STORE(R10)
+# Assembler statistics
+# max depth supported: 1000000
+# max depth required: 0
+# max tower jump: 0
+# 10 registers used
+# 0 BOOT operations required
