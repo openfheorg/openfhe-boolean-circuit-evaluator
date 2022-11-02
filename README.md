@@ -54,6 +54,10 @@ parallelized and algorithm is now a choke point (is still single thread
 that generates execution tasks, and does many searches). However, for encrypted circuits the overhead is small (less than a few percent). 
 Add FF and clocked circuits
 
+### Status as of 11/2/2022
+
+Migrated to OpenFHE.
+
 Todo:
 -----
 
@@ -81,6 +85,9 @@ also we need to eventually check out
 * Speed up circuit management representation, possibly with linked list
 
 * add command line flags for other parameter sets afforded by OpenFHE
+
+* split TB_crypto into md5 and sha256 test benches, since the combined code takes extremely long
+to run
 
 Building the system
 -------------------

@@ -1,26 +1,34 @@
 // @file assemble.cpp -- support assembly of intermdiate *.out file format
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 #include "assemble.h"
 #include "analyze.h"
 #include <algorithm>
@@ -28,7 +36,7 @@
 #include <functional>
 #include <iostream>
 
-#define ADD_IT 0  // set to 1 in order to use matlab indexing on output file
+#define ADD_IT 0 // set to 1 in order to use matlab indexing on output file
 
 // currently works but does not compute depth.
 
@@ -88,7 +96,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
     fname = fname + "_" + std::to_string(max_depth) + ".out";
   }
 
-  FILE *fid = fopen(fname.c_str(), "w");  // open the output file.
+  FILE *fid = fopen(fname.c_str(), "w"); // open the output file.
 
   std::cout << "Assembler: opening output file " << fname << " for output"
             << std::endl;
@@ -102,30 +110,30 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
   fprintf(fid, "# number input2 bits %d\n", v.n_in2_bits);
   fprintf(fid, "# number output1 bits %d\n", v.n_out1_bits);
 
-  bool delayed_get_flag = true;  // if true, delay get of all registers till end
-                                 // otherwise get output right after operation
-                                 // map of registers
+  bool delayed_get_flag = true; // if true, delay get of all registers till end
+                                // otherwise get output right after operation
+                                // map of registers
   std::vector<bool> reg_active_map(v.n_tot,
-                                   false);  // if true then register (i) is
-                                            // currently being used value false
-                                            // = unused value true = used
+                                   false); // if true then register (i) is
+                                           // currently being used value false
+                                           // = unused value true = used
 
   std::vector<int> reg_node_map(
-      v.n_tot, -1);  // current circuit node number stored in register (i)
-                     // value == node number, -1 == no node.
+      v.n_tot, -1); // current circuit node number stored in register (i)
+                    // value == node number, -1 == no node.
 
-  std::vector<int> out_map(v.n_out1_bits, -1);  // map of the output registers.
+  std::vector<int> out_map(v.n_out1_bits, -1); // map of the output registers.
 
   // (i) contains the node number of the ith output;
   std::vector<int> out_reg_map(v.n_out1_bits,
-                               -1);  // the ith entry contains the register
-                                     // number of the ith output node
+                               -1); // the ith entry contains the register
+                                    // number of the ith output node
 
   std::vector<unsigned int> depth_counter(
-      v.n_tot, 0);  // keeps track of depth at each register
+      v.n_tot, 0); // keeps track of depth at each register
 
   std::vector<unsigned int> tower_counter(
-      v.n_tot, 0);  // keeps track of tower size at each register
+      v.n_tot, 0); // keeps track of tower size at each register
   unsigned int max_tower_jump = 0;
 
   unsigned int max_depth_required = 0;
@@ -135,7 +143,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
   //  map all circuit input registers
   // execute initial LOAD commands.
 
-  unsigned int reg_counter = 0;  // start count from 0
+  unsigned int reg_counter = 0; // start count from 0
 
   // load all of first input's registers;
   // note this assumes the input registers are the first nodes assigned, first
@@ -163,7 +171,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
 
     reg_active_map[reg_counter] = true;
     reg_node_map[reg_counter] =
-        ix + v.n_in1_bits;  // see assumption of register numbering
+        ix + v.n_in1_bits; // see assumption of register numbering
     tower_counter[reg_counter] = max_depth;
     if (debug_flag) {
       fprintf(fid, "# Assigned node %d to R%d\n",
@@ -177,7 +185,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
   size_t ii = 0;
   for (uint ix = (v.n_tot - v.n_out1_bits); ix < v.n_tot; ix++) {
     out_map[ii] =
-        ix;  // save node mapping for iith output nodes renumbered to start at 1
+        ix; // save node mapping for iith output nodes renumbered to start at 1
     ii++;
   }
 
@@ -211,17 +219,17 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
     // check for low water mark goes here to make sure we did not break
     // anything
 
-    reg_active_map[jx] = true;  // mark register as used
+    reg_active_map[jx] = true; // mark register as used
 
     /////////////////////////////////////////////////////////////////////////
     // get the node number of the output
     unsigned int current_out_node =
-        f.out_list[line_ix][0];  // list is always 1 long
+        f.out_list[line_ix][0]; // list is always 1 long
 
     // and save it
     reg_node_map[jx] = current_out_node;
     unsigned int current_out_reg =
-        jx;  // keep track of the current output register #
+        jx; // keep track of the current output register #
 
     if (debug_flag) {
       fprintf(fid, "# Assigned node %d to R%d\n", reg_node_map[jx] + ADD_IT,
@@ -231,7 +239,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
     /////////////////////////////////////////////////////////////////////////
     // get the node numbers of the inputs
 
-    auto invarlist = f.in_list[line_ix];  // get input node list
+    auto invarlist = f.in_list[line_ix]; // get input node list
     std::vector<unsigned int> invarnamelist(invarlist.size());
 
     for (uint jx = 0; jx < invarlist.size(); jx++) {
@@ -257,7 +265,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
 
     /////////////////////////////////////////////////////////////////////////
     //  generate the line of assembly output
-    std::string name = f.call_list[line_ix];  // get func name
+    std::string name = f.call_list[line_ix]; // get func name
 
     unsigned int output_depth = 0;
     // different operators have different handlers
@@ -279,17 +287,18 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
       // and free them for this reduction operation, placing the result
       // back in the same register.
       // for now we will just report that we need a reduction.
-      if (depth1 > depth2) delta_depth = depth1 - depth2;
+      if (depth1 > depth2)
+        delta_depth = depth1 - depth2;
       //                 fprintf(fid,"R%d = MREDUCE(R%d,%d)  !depth = %d\n",...
       //                 current_out_reg, name, invarnamelist(1),
       //                 invarnamelist(2), output_depth);
       fprintf(fid, "reduction of %d needed on first register\n", delta_depth);
-      if
-        delta_depth > max_tower_jump max_tower_jump = delta_depth;
+      if (delta_depth > max_tower)
+        jump max_tower_jump = delta_depth;
       end elseif(depth2 > depth1) delta_depth = depth2 - depth1;
       fprintf(fid, "reduction of %d needed on second register\n", delta_depth);
-      if
-        delta_depth > max_tower_jump max_tower_jump = delta_depth;
+      if (delta_depth > max_tower)_
+        jump max_tower_jump = delta_depth;
       end end
 #else
       output_depth = 1;
@@ -307,7 +316,8 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
       input_depth = max(max(depth1, depth2));
 
       // adjust tower sizes if necessary
-      if (depth1 > depth2) delta_depth = depth1 - depth2;
+      if (depth1 > depth2)
+        delta_depth = depth1 - depth2;
       //                 fprintf(fid,"R%d = MREDUCE(R%d,%d)  !depth = %d\n",
       //                 current_out_reg, name, invarnamelist(1),
       //                 invarnamelist(2), output_depth);
@@ -380,17 +390,17 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
         // write out the STORE command right away.
         fprintf(fid, "Out%ld = STORE(R%d) ! depth = %d\n", out_ix + ADD_IT,
                 current_out_reg + ADD_IT,
-                output_depth);  // get the appropriate output
+                output_depth); // get the appropriate output
       } else {
         // otherwise make a commend and mark it for output at the end of
         // program
         fprintf(fid, "# R%d is a terminal output register for out%ld\n",
                 current_out_reg + ADD_IT, out_ix + ADD_IT);
-        out_reg_map[out_ix] = current_out_reg;  // #ok
+        out_reg_map[out_ix] = current_out_reg; // #ok
       }
     }
 
-  }  // for each line_ix in f.call_list
+  } // for each line_ix in f.call_list
 
   //  clean up by writing outputs if necessary
   if (delayed_get_flag) {
@@ -398,7 +408,7 @@ void assemble_bristol(Analysis &analysis, unsigned int max_depth,
     for (uint ix = 0; ix < out_map.size(); ix++) {
       fprintf(fid, "Out%d = STORE(R%d) ! depth = %d\n", ix + ADD_IT,
               out_reg_map[ix] + ADD_IT,
-              depth_counter[out_reg_map[ix]]);  // get the appropriate output
+              depth_counter[out_reg_map[ix]]); // get the appropriate output
     }
   }
 

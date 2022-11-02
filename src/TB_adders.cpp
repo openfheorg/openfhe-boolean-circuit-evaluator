@@ -1,27 +1,35 @@
 // @file TB_adders.cpp -- Test bed for encrypted adder circuits
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-////
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
+//
 
 //
 //
@@ -60,7 +68,7 @@ int main(int argc, char **argv) {
 
   bool analyze_flag = false;
   bool gen_fan_flag = false;
-  bool assemble_flag = true && analyze_flag;  // cant assemble without analysis
+  bool assemble_flag = true && analyze_flag; // cant assemble without analysis
 
   unsigned int n_cases = 2;
   unsigned int num_test_loops = 10;
@@ -75,25 +83,25 @@ int main(int argc, char **argv) {
   std::string inputFname;
   std::string outputFname;
   std::string dirPath;
-  uint64_t max_depth = 0;  // max depth supported before bootstrap needed
+  uint64_t max_depth = 0; // max depth supported before bootstrap needed
   bool new_flag(false);
 
   bool all_passed = true;
   for (unsigned int i = 0; i < n_cases; i++) {
     switch (i) {
-      case 0:
-        dirPath = "examples/old_bristol_ckts/arith";
-        inputFname = "adder_32bit.txt";
-        outputFname = "adder_32bit_";
-        break;
-      case 1:
-        dirPath = "examples/old_bristol_ckts/arith";
-        inputFname = "adder_64bit.txt";
-        outputFname = "adder_64bit_";
-        break;
-      default:
-        std::cout << "bad case number:" << i << std::endl;
-        exit(-1);
+    case 0:
+      dirPath = "examples/old_bristol_ckts/arith";
+      inputFname = "adder_32bit.txt";
+      outputFname = "adder_32bit_";
+      break;
+    case 1:
+      dirPath = "examples/old_bristol_ckts/arith";
+      inputFname = "adder_64bit.txt";
+      outputFname = "adder_64bit_";
+      break;
+    default:
+      std::cout << "bad case number:" << i << std::endl;
+      exit(-1);
     }
     if (max_depth == 0) {
       outputFname = outputFname + "FHE.out";
@@ -112,7 +120,7 @@ int main(int argc, char **argv) {
 
     if (assemble_flag) {
       // generate assembler
-      bool debug_flag = true;  // annotate assembler output
+      bool debug_flag = true; // annotate assembler output
 
       //  now assemble note this writes out a new version of .out
 
@@ -133,7 +141,7 @@ int main(int argc, char **argv) {
     } else {
       std::cout << "fails" << std::endl;
     }
-  }  // loop over case i
+  } // loop over case i
   std::cout << "===========================" << std::endl;
   if (all_passed) {
     std::cout << "All Adder cases passed" << std::endl;

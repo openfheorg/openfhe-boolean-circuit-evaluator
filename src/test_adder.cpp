@@ -1,25 +1,34 @@
 // @file test_adder.cpp -- runs and tests encrypted adder circuits
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 
 #include "utils.h"
 #include <algorithm>
@@ -97,7 +106,7 @@ bool test_adder(std::string inFname, unsigned int numTestLoops,
   try {
     while (std::getline(inFile, tline)) {
       if (tline.find("# Assembler statistics") != std::string::npos) {
-        std::getline(inFile, tline);  // skip 3 lines
+        std::getline(inFile, tline); // skip 3 lines
         std::getline(inFile, tline);
         std::getline(inFile, tline);
         std::getline(inFile, tline);
@@ -165,9 +174,9 @@ bool test_adder(std::string inFname, unsigned int numTestLoops,
     std::cout << "test " << test_ix << std::endl;
 
     // generate random inputs
-    srand(test_ix);  // set the random number generator to a known seed
+    srand(test_ix); // set the random number generator to a known seed
     std::cout << " input 1:  ";
-    inputs.resize(2);  // clear inputs
+    inputs.resize(2); // clear inputs
     inputs[0].resize(0);
     inputs[1].resize(0);
     for (uint ix = 0; ix < n_in_bits[0]; ix++) {
@@ -192,17 +201,17 @@ bool test_adder(std::string inFname, unsigned int numTestLoops,
     // generate the test output (sum)
 
     std::vector<unsigned int> out(n_out_bits[0], 0);
-    unsigned int c = 0;  // clear carry in
+    unsigned int c = 0; // clear carry in
     unsigned int a, b, tmp;
     for (uint ix = 0; ix < n_in_bits[0]; ix++) {
       // add each bit with full adder
       a = in1[ix];
       b = in2[ix];
       tmp = a xor b;
-      out[ix] = c xor tmp;           // sum bit
-      c = (a and b) or (c and tmp);  // carry out
+      out[ix] = c xor tmp;          // sum bit
+      c = (a and b) or (c and tmp); // carry out
     }
-    out[n_in_bits[0]] = c;  // last bit is last carry out
+    out[n_in_bits[0]] = c; // last bit is last carry out
     std::cout << " output : ";
     for (int ix = n_out_bits[0] - 1; ix >= 0; ix--) {
       std::cout << out[ix];
@@ -220,7 +229,8 @@ bool test_adder(std::string inFname, unsigned int numTestLoops,
     circ.SetInput(inputs);
     Outputs outputs = circ.Clock();
     std::cout << "program done" << std::endl;
-    if (test_ix == 0) circ.dumpGateCount();
+    if (test_ix == 0)
+      circ.dumpGateCount();
 
     auto out_plain = out;
     // note curently only one valid output register
@@ -281,7 +291,7 @@ bool test_adder(std::string inFname, unsigned int numTestLoops,
       passed = passed & false;
     }
 
-  }  // for test_ix
+  } // for test_ix
   std::cout << "# tests total: " << numTestLoops << std::endl;
   std::cout << "# passed plaintext: " << n_p_passed << std::endl;
   std::cout << "# passed encrypted: " << n_e_passed << std::endl;

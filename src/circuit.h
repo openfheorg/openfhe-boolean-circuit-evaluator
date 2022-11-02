@@ -1,26 +1,34 @@
 // @file circuit.h -- encrypted circuit evaluation object
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 #ifndef SRC_CIRCUIT_EVAL_H_
 #define SRC_CIRCUIT_EVAL_H_
 
@@ -41,7 +49,7 @@ using Outputs = std::vector<std::vector<unsigned int>>;
 using NetList = std::map<std::string, GateNameList>;
 
 class Circuit {
- public:
+public:
   Circuit(lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method);
   ~Circuit();
   bool ReadFile(std::string cktName);
@@ -60,21 +68,21 @@ class Circuit {
   void dumpGates(void);
   void dumpGateCount(void);
 
- private:
+private:
   lbcrypto::BinFHEContext cc;
   lbcrypto::LWEPrivateKey sk;
 
-  bool plaintext_flag;  // if true perform plaintext logic
-  bool encrypted_flag;  // if true perform encrypted logic
-  bool verify_flag;     // if true verify plaintext vs encrypted logic
+  bool plaintext_flag; // if true perform plaintext logic
+  bool encrypted_flag; // if true perform encrypted logic
+  bool verify_flag;    // if true verify plaintext vs encrypted logic
 
-  NetList nl;  // full net list of the ckt (all wires and fanout gates)
+  NetList nl; // full net list of the ckt (all wires and fanout gates)
 
   WireNameList waitingWireNames;
   WireQueue activeWires;
 
-  GateList inputGates;  // input gates in ckt
-  GateList allGates;    // all other gates in ckt
+  GateList inputGates; // input gates in ckt
+  GateList allGates;   // all other gates in ckt
 
   GateQueue readyGates;
   GateQueue waitingGates;

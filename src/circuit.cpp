@@ -1,26 +1,34 @@
 // @file circuit.cpp -- encrypted circuit evaluation object
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 #include "circuit.h"
 
 #include <algorithm>
@@ -28,26 +36,26 @@
 #include <iostream>
 #include <sstream>
 
-#include "debug.h"
 #include "utils.h"
 #include <boost/range/adaptor/reversed.hpp>
 
-Circuit::Circuit(lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method) {
+Circuit::Circuit(lbcrypto::BINFHE_PARAMSET set,
+                 lbcrypto::BINFHE_METHOD method) {
   // clear all flags
-  this->plaintext_flag = false;  // if true perform plaintext logic
-  this->encrypted_flag = false;  // if true perform encrypted logic
-  this->verify_flag = false;     // if true verify plaintext vs encrypted logic
+  this->plaintext_flag = false; // if true perform plaintext logic
+  this->encrypted_flag = false; // if true perform encrypted logic
+  this->verify_flag = false;    // if true verify plaintext vs encrypted logic
 
   this->done = false;
   // create empty containers
-  this->nl = NetList();  // full net list of the ckt (all wires and fanout
-                         // gates)
+  this->nl = NetList(); // full net list of the ckt (all wires and fanout
+                        // gates)
 
   this->waitingWireNames = WireNameList(0);
   this->activeWires = WireQueue(0);
 
-  this->inputGates = GateList(0);  // input gates in ckt
-  this->allGates = GateList(0);    // all other gates in ckt
+  this->inputGates = GateList(0); // input gates in ckt
+  this->allGates = GateList(0);   // all other gates in ckt
 
   this->readyGates = GateQueue(0);
   this->waitingGates = GateQueue(0);
@@ -122,7 +130,7 @@ bool Circuit::ReadFile(std::string inFname) {
         std::cout << "\r loading line " << lineNo << std::flush;
       }
       if (tline[0] == '#') {
-        continue;  // ignore comment lines
+        continue; // ignore comment lines
       }
       Gate g;
       g.plainin.resize(2);
@@ -151,7 +159,7 @@ bool Circuit::ReadFile(std::string inFname) {
         g.ready.push_back(false);
         g.ready.push_back(false);
         g.outWireNames.push_back(out1);
-        g.plainin.resize(1);  // adjust to only one input
+        g.plainin.resize(1); // adjust to only one input
         g.encin.resize(1);
 
         gateNo++;
@@ -176,7 +184,7 @@ bool Circuit::ReadFile(std::string inFname) {
         g.ready.push_back(false);
         g.outWireNames.push_back(out1);
         g.outWireNames.push_back(out2);
-        g.plainin.resize(1);  // adjust to only one input
+        g.plainin.resize(1); // adjust to only one input
         g.encin.resize(1);
 
         gateNo++;
@@ -203,7 +211,7 @@ bool Circuit::ReadFile(std::string inFname) {
         g.inWireNames.push_back(in1);
         g.ready.push_back(false);
         g.outWireNames.push_back(out1);
-        g.plainin.resize(1);  // adjust to only one input
+        g.plainin.resize(1); // adjust to only one input
         g.encin.resize(1);
 
         gateNo++;
@@ -282,7 +290,7 @@ bool Circuit::ReadFile(std::string inFname) {
         // No op
       }
 
-    }  // while
+    } // while
   } catch (std::system_error &e) {
     // std::cout<<"end of file"<<std::endl;
     // end of file here.
@@ -296,11 +304,11 @@ bool Circuit::ReadFile(std::string inFname) {
 
   // save output space
   // for now fixed to single output bus.
-  max_output_bits++;  // count was from 0
+  max_output_bits++; // count was from 0
   std::cout << std::endl
             << "generating output nbits " << max_output_bits << std::endl;
 
-  this->n_outputs = 1;  // fixed for now
+  this->n_outputs = 1; // fixed for now
   this->n_output_bits.resize(1);
   this->n_output_bits[0] = max_output_bits;
   this->circuitOut.resize(1);
@@ -312,13 +320,13 @@ bool Circuit::ReadFile(std::string inFname) {
   // generate netlist
   std::cout << "generating netlist" << std::endl;
   // start with input gates
-  for (auto og : this->inputGates) {  // for all input gates
+  for (auto og : this->inputGates) { // for all input gates
 
-    for (auto ow : og.outWireNames) {  // for each output
+    for (auto ow : og.outWireNames) { // for each output
       GateNameList fanout(0);
-      fanout.reserve(16);                 // arbitrary
-      for (auto ig : this->allGates) {    // loop through all gates
-        for (auto iw : ig.inWireNames) {  // for all input wires.
+      fanout.reserve(16);                // arbitrary
+      for (auto ig : this->allGates) {   // loop through all gates
+        for (auto iw : ig.inWireNames) { // for all input wires.
           if (ow == iw) {
             fanout.push_back(ig.name);
           }
@@ -328,11 +336,11 @@ bool Circuit::ReadFile(std::string inFname) {
     }
   }
   // repeat for the remaining gates
-  for (auto og : this->allGates) {     // for all input gates
-    for (auto ow : og.outWireNames) {  // for each output
+  for (auto og : this->allGates) {    // for all input gates
+    for (auto ow : og.outWireNames) { // for each output
       GateNameList fanout(0);
-      for (auto ig : this->allGates) {    // loop through all gates
-        for (auto iw : ig.inWireNames) {  // for all input wires.
+      for (auto ig : this->allGates) {   // loop through all gates
+        for (auto iw : ig.inWireNames) { // for all input wires.
           if (ow == iw) {
             fanout.push_back(ig.name);
           }
@@ -390,7 +398,7 @@ void Circuit::Reset(void) {
   // reserve capacity for all other gateQueues
   // auto maxGates = waitingGates.size();
   // readyGates.reserve(maxGates);
-  readyGates.clear();  // capacity should be unchanged
+  readyGates.clear(); // capacity should be unchanged
   // executingGates.reserve(maxGates);
   executingGates.clear();
   // examinedGates.reserve(maxGates);
@@ -403,7 +411,8 @@ void Circuit::Reset(void) {
   for (auto const &w : this->nl) {
     waitingWireNames.push_back(w.first);
   }
-  OPENFHE_DEBUG("reset: now waiting wirename size: " << waitingWireNames.size());
+  OPENFHE_DEBUG(
+      "reset: now waiting wirename size: " << waitingWireNames.size());
 }
 
 bool Circuit::_parse_input(Inputs input, std::string input_name,
@@ -412,13 +421,13 @@ bool Circuit::_parse_input(Inputs input, std::string input_name,
 
   std::stringstream s1(input_name);
   std::string token;
-  getline(s1, token, ':');  // get the IN
-  getline(s1, token, ':');  // get the #
+  getline(s1, token, ':'); // get the IN
+  getline(s1, token, ':'); // get the #
   size_t in_num(std::stoi(token));
 
   std::stringstream s2(bit_name);
-  getline(s2, token, ':');  // get the BIT
-  getline(s2, token, ':');  // get the #
+  getline(s2, token, ':'); // get the BIT
+  getline(s2, token, ':'); // get the #
   size_t bit_num(std::stoi(token));
   return input[in_num][bit_num];
 }
@@ -429,13 +438,13 @@ void Circuit::_parse_output(std::string out_name, std::string bit_name,
 
   std::stringstream s1(out_name);
   std::string token;
-  getline(s1, token, ':');  // get the IN
-  getline(s1, token, ':');  // get the #
+  getline(s1, token, ':'); // get the IN
+  getline(s1, token, ':'); // get the #
   size_t out_num(std::stoi(token));
 
   std::stringstream s2(bit_name);
-  getline(s2, token, ':');  // get the BIT
-  getline(s2, token, ':');  // get the #
+  getline(s2, token, ':'); // get the BIT
+  getline(s2, token, ':'); // get the #
   size_t bit_num(std::stoi(token));
   circuitOut[out_num][bit_num] = value;
 }
@@ -512,7 +521,8 @@ void Circuit::SetInput(Inputs input, bool verbose) {
     std::cerr << "error: total_inputs: " << total_input_bits
               << " #used: " << inputs_used << std::endl;
   } else {
-    if (verbose) std::cout << "input confirmed" << std::endl;
+    if (verbose)
+      std::cout << "input confirmed" << std::endl;
   }
 }
 
@@ -530,7 +540,7 @@ Outputs Circuit::Clock(void) {
     std::cout << "\r                            " << std::flush;
     std::cout << "\r managing... " << std::flush;
     TIC(auto t_management);
-    _CircuitManager();  // puts tasks on executingGate
+    _CircuitManager(); // puts tasks on executingGate
     management_time += TOC_MS(t_management);
     // returns when none are left
     std::cout << "\r                            " << std::flush;
@@ -544,8 +554,10 @@ Outputs Circuit::Clock(void) {
   }
   total_time = TOC_MS(t_total);
   // if very fast circuits...
-  if (execution_time == 0) execution_time = 1;
-  if (total_time == 0) total_time = 1;
+  if (execution_time == 0)
+    execution_time = 1;
+  if (total_time == 0)
+    total_time = 1;
 
   std::cout << std::endl
             << "### Total time " << total_time << " msec" << std::endl;
@@ -577,7 +589,7 @@ void Circuit::_CircuitManager(void) {
   OPENFHE_DEBUG("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   while (!this->activeWires.empty()) {
     OPENFHE_DEBUG("CM top wg: " << waitingGates.size()
-                        << " aw: " << activeWires.size());
+                                << " aw: " << activeWires.size());
 
     auto inw = this->activeWires.front();
     this->activeWires.pop_front();
@@ -589,7 +601,7 @@ void Circuit::_CircuitManager(void) {
     }
     examinedGates.clear();
     bool wire_done = false;
-    while (!wire_done && !waitingGates.empty()) {  // short ckt for wire done
+    while (!wire_done && !waitingGates.empty()) { // short ckt for wire done
       auto g = waitingGates.front();
       waitingGates.pop_front();
       // OPENFHE_DEBUG("  ## examining gate "<<g.name);
@@ -598,7 +610,7 @@ void Circuit::_CircuitManager(void) {
       bool gateReady(true);
       auto f = inw.getFanoutGates();
       auto it = std::find(f.begin(), f.end(), g.name);
-      if (it != f.end()) {  // if g.name in inw.fanoutGates
+      if (it != f.end()) { // if g.name in inw.fanoutGates
         OPENFHE_DEBUG("  found gate " << g.name << " in fanout");
         for (uint ix = 0; ix < n_in; ix++) {
           if (g.inWireNames[ix] == inw.getName()) {
@@ -609,7 +621,7 @@ void Circuit::_CircuitManager(void) {
             g.plainin[ix] = inw.getValue();
             // OPENFHE_DEBUG("    input "<<ix );
           }
-          gateReady &= g.ready[ix];  // any unready inputs turn this off
+          gateReady &= g.ready[ix]; // any unready inputs turn this off
         }
         if (gateReady) {
           this->executingGates.push_back(g);
@@ -620,8 +632,9 @@ void Circuit::_CircuitManager(void) {
         }
         // remove this gate from this wire’s fanout
         inw.updateFanoutGates(g.name);
-        // OPENFHE_DEBUG("  updated wire fanout on "<<inw.getName()<< " now length "
-        //		 <<inw.getFanoutGates().size());
+        // OPENFHE_DEBUG("  updated wire fanout on "<<inw.getName()
+        //   << " now length "
+        //   << inw.getFanoutGates().size() );
         if (inw.getNumberFanoutGates() != 0) {
           // OPENFHE_DEBUG("  wire not done");
         } else {
@@ -631,7 +644,7 @@ void Circuit::_CircuitManager(void) {
       } else {
         // gate was not in current wire fanout.
         examinedGates.push_back(g);
-      }  // end if it!=end
+      } // end if it!=end
     }
     TIC(auto t_clean);
     // copy examined gates to waitingGates
@@ -653,12 +666,12 @@ void Circuit::_CircuitManager(void) {
     } else {
       OPENFHE_DEBUG("wire done " << inw.getName());
     }
-    OPENFHE_DEBUG("bottom of while waiting gates size: " << waitingGates.size()
-                                                 << " wire done " << wire_done);
+    OPENFHE_DEBUG("bottom of while waiting gates size: "
+                  << waitingGates.size() << " wire done " << wire_done);
 
     OPENFHE_DEBUG("------------------");
     cleanup_time += TOC_MS(t_clean);
-  }  // while active wire is not empty
+  } // while active wire is not empty
   OPENFHE_DEBUG("Manager Done Cycle");
   // active wire was empty. return so we can cycle again.
   total_time += TOC_MS(t_tot);
@@ -672,7 +685,7 @@ void Circuit::_ExecuteGates(void) {
   OPENFHE_DEBUG("Execute start Cycle");
 
   // all gates on the executingGates queue can be Evaluated in parallel
-#if 0  // requires c++ 9.0 to compile  note could try using  __GNUC__ >8
+#if 0 // requires c++ 9.0 to compile  note could try using  __GNUC__ >8
 #pragma omp parallel for schedule(dynamic)
   for (Gate & g: executingGates){
 	OPENFHE_DEBUG("processing gate "<<g.name);
@@ -704,40 +717,40 @@ void Circuit::_ExecuteGates(void) {
     // g.Evaluate(this->plaintext_flag, this->encrypted_flag,
     // this->verify_flag);
     switch (g.op) {
-      case (GateEnum::INPUT):
-        this->n_input_gates++;
-        break;
-      case (GateEnum::OUTPUT):
-        this->n_output_gates++;
-        break;
-      case (GateEnum::NOT):
-        this->n_not_gates++;
-        break;
-      case (GateEnum::AND):
-        this->n_and_gates++;
-        break;
-      case (GateEnum::OR):
-        this->n_or_gates++;
-        break;
-      case (GateEnum::XOR):
-        this->n_xor_gates++;
-        break;
-      case (GateEnum::DFF):
-        break;
-      case (GateEnum::LUT3):
-        break;
-      case (GateEnum::LUT4):
-        break;
-      default:
-        std::cerr << "bad gate eval" << std::endl;
+    case (GateEnum::INPUT):
+      this->n_input_gates++;
+      break;
+    case (GateEnum::OUTPUT):
+      this->n_output_gates++;
+      break;
+    case (GateEnum::NOT):
+      this->n_not_gates++;
+      break;
+    case (GateEnum::AND):
+      this->n_and_gates++;
+      break;
+    case (GateEnum::OR):
+      this->n_or_gates++;
+      break;
+    case (GateEnum::XOR):
+      this->n_xor_gates++;
+      break;
+    case (GateEnum::DFF):
+      break;
+    case (GateEnum::LUT3):
+      break;
+    case (GateEnum::LUT4):
+      break;
+    default:
+      std::cerr << "bad gate eval" << std::endl;
     }
 
-    if (g.op !=
-        GateEnum::OUTPUT) {  // output gates do not generate output wires
+    if (g.op != GateEnum::OUTPUT) { // output gates do not generate output wires
       auto outnames = g.outWireNames;
       unsigned int out_ix(0);
       for (auto outname : outnames) {
-        OPENFHE_DEBUG("  activating gate " << g.name << " output wire " << outname);
+        OPENFHE_DEBUG("  activating gate " << g.name << " output wire "
+                                           << outname);
 
         Wire w;
         w.setName(outname);
@@ -775,7 +788,7 @@ void Circuit::_ExecuteGates(void) {
         // push onto activeWires queue
         this->activeWires.push_back(w);
         OPENFHE_DEBUG("  pushed onto active queue size" << activeWires.size());
-      }  // for outnames
+      } // for outnames
     } else {
       // gate is output
       // right now outputs are output, bit, and single value
@@ -790,11 +803,11 @@ void Circuit::_ExecuteGates(void) {
         }
         _parse_output(g.outWireNames[0], g.outWireNames[1], g.plainout[0]);
       }
-    }  // if gate is not OUTPUT
+    } // if gate is not OUTPUT
 
     OPENFHE_DEBUG("  gate " << g.name << " done");
-    this->doneGates.push_back(g);  // done with this gate
-  }                                // end while
+    this->doneGates.push_back(g); // done with this gate
+  }                               // end while
   OPENFHE_DEBUG("Execute done Cycle");
   std::cout << "\rProcessing: " << this->doneGates.size() << " of "
             << this->allGates.size() << std::flush;
@@ -817,7 +830,7 @@ bool Circuit::getEncrypted(void) { return (this->encrypted_flag); }
 void Circuit::setVerify(bool input) {
   this->verify_flag = input;
   this->gep.verify_flag = this->verify_flag;
-  if (input) {  // note in order to verify both flags must also be true
+  if (input) { // note in order to verify both flags must also be true
     this->setPlaintext(true);
     this->setEncrypted(true);
   }

@@ -12,12 +12,11 @@ Todo
 
 ```
 TB_adder_2bit passed
-TB_parity fails with segfaut --need to track it down
-
+TB_parity passed
 TB_adders passed
 TB_comparators passed
-TB_multipliers core dump
-TB_crypto in process.
-TB_aes not tested
+TB_multipliers passed
+TB_crypto testing
+TB_aes passed
 ```
 Comments/additions are welcome by the OpenFHE team

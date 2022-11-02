@@ -1,25 +1,34 @@
 // @file test_adder.cpp -- runs and tests encrypted adder circuits
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 
 #include <cstring>
 #include <fstream>
@@ -102,7 +111,7 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
   try {
     while (std::getline(inFile, tline)) {
       if (tline.find("# Assembler statistics") != std::string::npos) {
-        std::getline(inFile, tline);  // skip 3 lines
+        std::getline(inFile, tline); // skip 3 lines
         std::getline(inFile, tline);
         std::getline(inFile, tline);
         std::getline(inFile, tline);
@@ -166,72 +175,66 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
   Inputs inputs;
   for (uint test_ix = 0; test_ix < numTestLoops; test_ix++) {
     std::cout << "test " << test_ix << std::endl;
-    unsigned int nloop = 2;  //# input vectors we have
+    unsigned int nloop = 2; //# input vectors we have
     for (uint loop_ix = 0; loop_ix < nloop; loop_ix++) {
       std::cout << "subtest " << loop_ix << std::endl;
       switch (loop_ix) {
-        case 0:
-          if (contains(inFname, "AES-expanded")) {  // test aes-expanded
-            inhex1 = "00000000000000000000000000000000";
-            inhex2 =
-                "00000000000000000000000000000000000000000000000000000000000"
-                "00000000000000000000000000000000000000000000000000000000000"
-                "00000000000000000000000000000000000000000000000000000000000"
-                "00000000000000000000000000000000000000000000000000000000000"
-                "00000000000000000000000000000000000000000000000000000000000"
-                "000000000000000000000000000000000000000000000000000000000";
-            // not validated
-            outbin =
-                "01101100011011000110110001101100011011000110110001101100011"
-                "01100011011000110110001101100011011000110110001101100011011"
-                "0001101100";
-          } else {  // non-expanded
-            inhex1 = "00000000000000000000000000000000";
-            inhex2 = "00000000000000000000000000000000";
-            // not validated
-            outbin =
-                "01110100110101000010110001010011100110100101111100110010000"
-                "10001110111000011010001010001111101110010101111010010100101"
-                "1101100110";
-          }
-          break;
-        case 1:
-          if (contains(inFname, "AES-expanded")) {  // test aes-expanded
-            inhex1 = "ffffffffffffffffffffffffffffffff";
-            inhex2 = "ffffffffffffffffffffffffffffffff";
-            inhex2 =
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                "fffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-            // not validated
-            outbin =
-                "00110010001100100011001000110010001100100011001000110010001"
-                "10010001100100011001000110010001100100011001000110010001100"
-                "1000110010";
-          } else {  // non-expanded
-            inhex1 = "ffffffffffffffffffffffffffffffff";
-            inhex2 = "ffffffffffffffffffffffffffffffff";
-            // not validated
-            outbin =
-                "10011110100111010101110010011000010010100000111010001010010"
-                "01101000011001111001100000001010011010011111010000100111111"
-                "0100111101";
-          }
-          break;
-        default:
-          std::cout << "bad aes test case number:" << loop_ix << std::endl;
-          exit(-1);
+      case 0:
+        if (contains(inFname, "AES-expanded")) { // test aes-expanded
+          inhex1 = "00000000000000000000000000000000";
+          inhex2 = "00000000000000000000000000000000000000000000000000000000000"
+                   "00000000000000000000000000000000000000000000000000000000000"
+                   "00000000000000000000000000000000000000000000000000000000000"
+                   "00000000000000000000000000000000000000000000000000000000000"
+                   "00000000000000000000000000000000000000000000000000000000000"
+                   "000000000000000000000000000000000000000000000000000000000";
+          // not validated
+          outbin = "01101100011011000110110001101100011011000110110001101100011"
+                   "01100011011000110110001101100011011000110110001101100011011"
+                   "0001101100";
+        } else { // non-expanded
+          inhex1 = "00000000000000000000000000000000";
+          inhex2 = "00000000000000000000000000000000";
+          // not validated
+          outbin = "01110100110101000010110001010011100110100101111100110010000"
+                   "10001110111000011010001010001111101110010101111010010100101"
+                   "1101100110";
+        }
+        break;
+      case 1:
+        if (contains(inFname, "AES-expanded")) { // test aes-expanded
+          inhex1 = "ffffffffffffffffffffffffffffffff";
+          inhex2 = "ffffffffffffffffffffffffffffffff";
+          inhex2 = "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                   "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                   "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                   "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                   "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                   "fffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+          // not validated
+          outbin = "00110010001100100011001000110010001100100011001000110010001"
+                   "10010001100100011001000110010001100100011001000110010001100"
+                   "1000110010";
+        } else { // non-expanded
+          inhex1 = "ffffffffffffffffffffffffffffffff";
+          inhex2 = "ffffffffffffffffffffffffffffffff";
+          // not validated
+          outbin = "10011110100111010101110010011000010010100000111010001010010"
+                   "01101000011001111001100000001010011010011111010000100111111"
+                   "0100111101";
+        }
+        break;
+      default:
+        std::cout << "bad aes test case number:" << loop_ix << std::endl;
+        exit(-1);
       }
 
       // non-expanded 128 bits for input 1, 2
       // expanded 128 bits for input 1 1408 for input 2
       // 128 bits for output 1
 
-      in1_good = HexStr2UintVec(inhex1);  // convert to input
-      in2_good = HexStr2UintVec(inhex2);  // convert to input
+      in1_good = HexStr2UintVec(inhex1); // convert to input
+      in2_good = HexStr2UintVec(inhex2); // convert to input
 
       if (in1_good.size() != n_in_bits[0]) {
         std::cout << "bad aes input 1 length " << std::endl;
@@ -253,7 +256,7 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
       }
       std::cout << std::endl;
 
-      out_good = BinStr2UintVec(outbin);  // set output
+      out_good = BinStr2UintVec(outbin); // set output
       // note the provided test vectors are reversed from our circuit,
       // so we reverse the input and output
       // reverse(in1_good.begin(), in1_good.end());
@@ -261,7 +264,7 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
       // reverse(out_good.begin(), out_good.end());
 
       // pack in1_good in2_good into Inputs
-      inputs.resize(2);  // two inputs
+      inputs.resize(2); // two inputs
       inputs[0].resize(0);
       inputs[1].resize(0);
 
@@ -283,7 +286,8 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
       circ.SetInput(inputs);
 
       Outputs outputs = circ.Clock();
-      if (test_ix == 0) circ.dumpGateCount();
+      if (test_ix == 0)
+        circ.dumpGateCount();
       std::cout << "program done" << std::endl;
 
       // parse the output structure
@@ -360,8 +364,8 @@ bool test_aes(std::string inFname, unsigned int numTestLoops,
         std::cout << "output does not match" << std::endl;
         passed = passed & false;
       }
-    }  // test loop
-  }    // for test_ix
+    } // test loop
+  }   // for test_ix
   std::cout << "# tests total: " << numTestLoops << std::endl;
   std::cout << "# passed plaintext: " << n_p_passed << std::endl;
   std::cout << "# passed encrypted: " << n_e_passed << std::endl;

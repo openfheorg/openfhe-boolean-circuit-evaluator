@@ -1,26 +1,34 @@
 // @file analyze.cpp -- analyze input file for statistics
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 #include "analyze.h"
 
 #include <algorithm>
@@ -135,7 +143,7 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
     remain = fgets(buff, sizeof buff, fid);
     token = std::strtok(remain, " ");
 
-    sscanf(token, "%d", &n_outputs);  // always 1
+    sscanf(token, "%d", &n_outputs); // always 1
 
     token = std::strtok(NULL, " ");
     sscanf(token, "%d", &n_out1_var);
@@ -210,8 +218,8 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
   std::vector<std::vector<unsigned int>> func_out_list(n_tot_func);
 
   for (uint ix = 0; ix < n_tot_func; ix++) {
-    std::vector<unsigned int> inlist;   // list of input nodes
-    std::vector<unsigned int> outlist;  // list of output nodes
+    std::vector<unsigned int> inlist;  // list of input nodes
+    std::vector<unsigned int> outlist; // list of output nodes
 
     //  get # in and out nodes
     remain = fgets(buff, sizeof buff, fid);
@@ -226,12 +234,12 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
     sscanf(token, "%d", &nout);
 
     unsigned int tmp;
-    for (uint jj = 0; jj < nin; jj++) {  // read list of input nodes
+    for (uint jj = 0; jj < nin; jj++) { // read list of input nodes
       token = std::strtok(NULL, " ");
       sscanf(token, "%d", &tmp);
       inlist.push_back(tmp);
     }
-    for (uint jj = 0; jj < nout; jj++) {  // read list of output nodes
+    for (uint jj = 0; jj < nout; jj++) { // read list of output nodes
       token = std::strtok(NULL, " ");
       sscanf(token, "%d", &tmp);
       outlist.push_back(tmp);
@@ -245,34 +253,35 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
     func_out_list[ix] = outlist;
 
     *std::remove(token, token + strlen(token), '\n') =
-        '\0';  // removes _all_ new lines.
+        '\0'; // removes _all_ new lines.
     std::string str = std::string(token);
-    for (auto &c : str) c = toupper(c);  // convert to uppercase
+    for (auto &c : str)
+      c = toupper(c); // convert to uppercase
     // token =  toupper(token); // parse function call
     if (str == "XOR") {
       n_xor = n_xor + 1;
-      func_call_list[ix] = "XOR";  // function token for xor
+      func_call_list[ix] = "XOR"; // function token for xor
     } else if (str == "AND") {
       n_and = n_and + 1;
-      func_call_list[ix] = "AND";  // function token for xor
+      func_call_list[ix] = "AND"; // function token for xor
     } else if (str == "INV") {
       n_not = n_not + 1;
-      func_call_list[ix] = "NOT";  // function token for inv
+      func_call_list[ix] = "NOT"; // function token for inv
     } else if (str == "EQ") {
       n_eq = n_eq + 1;
-      func_call_list[ix] = " EQ";  // function token for inv
+      func_call_list[ix] = " EQ"; // function token for inv
       std::cout << "Cannot parse EQ!! yet failing" << std::endl;
       exit(-1);
     } else if (str == "EQW") {
       n_eqw = n_eqw + 1;
-      func_call_list[ix] = "EQW";  // function token for inv
+      func_call_list[ix] = "EQW"; // function token for inv
     } else {
       std::cout << "bad parse of function on line " << ix << std::endl;
     }
 
     // generate high and low water marks for each node
     // low water is first gate that uses the node, high water is last gate
-    for (const auto &jj : inlist) {  // (note node name start at 0
+    for (const auto &jj : inlist) { // (note node name start at 0
       if (var_low_water[jj] == 0) {
         var_low_water[jj] = ix;
       }
@@ -284,7 +293,7 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
       }
       var_high_water[jj] = ix;
     }
-  }  // for ix
+  } // for ix
 
   fclose(fid);
 
@@ -306,13 +315,13 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
       for (uint jx = 0; jx < n_tot_func; jx++) {
         auto templist = func_in_list[jx];
 
-        if (1) {  // c way
+        if (1) { // c way
           for (uint kx = 0; kx < templist.size(); kx++) {
             if (ix == templist[kx]) {
               var_fan_out[ix] = var_fan_out[ix] + 1;
             }
           }
-        } else {  // matlab way
+        } else { // matlab way
           // kx = find(templist==ix);
           // var_fan_out[ix] = var_fan_out[ix] + length(kx);
         }
@@ -321,7 +330,7 @@ Analysis analyze_bristol(std::string in_fname, bool gen_fan_flag,
         if (1) {
           for (uint kx = 0; kx < templist.size(); kx++) {
             if (ix == templist[kx]) {
-              var_fan_in[ix] = var_fan_in[ix] + 1;  // should always be max 1
+              var_fan_in[ix] = var_fan_in[ix] + 1; // should always be max 1
             }
           }
         } else {

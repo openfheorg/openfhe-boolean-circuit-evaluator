@@ -1,25 +1,34 @@
 // @file utils.cpp -- utility functions for encrypted circuit evaluation
-// @author TPOC: contact@palisade-crypto.org
+//==================================================================================
+// BSD 2-Clause License
 //
-// @copyright Copyright (c) 2020, New Jersey Institute of Technology (NJIT)
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+//
 // All rights reserved.
+//
+// Author TPOC: contact@openfhe.org
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice,
-// this list of conditions and the following disclaimer in the documentation
-// and/or other materials provided with the distribution. THIS SOFTWARE IS
-// PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//==================================================================================
 
 #include "utils.h"
 
@@ -35,8 +44,8 @@ bool contains(std::string s1, std::string s2) {
 }
 
 std::vector<unsigned int> HexStr2UintVec(std::string inhex) {
-  unsigned int in_len = inhex.length();  // number of hex digits
-  unsigned out_len = in_len * 4;         // number of bits
+  unsigned int in_len = inhex.length(); // number of hex digits
+  unsigned out_len = in_len * 4;        // number of bits
   std::vector<unsigned int> out_bits(out_len, 0);
   unsigned int out_ix = 0;
 
@@ -59,8 +68,8 @@ std::vector<unsigned int> HexStr2UintVec(std::string inhex) {
 }
 
 std::vector<unsigned int> BinStr2UintVec(std::string inbin) {
-  unsigned int in_len = inbin.length();  // number of binary digits
-  unsigned out_len = in_len;             // number of bits
+  unsigned int in_len = inbin.length(); // number of binary digits
+  unsigned out_len = in_len;            // number of bits
   std::vector<unsigned int> out_bits(out_len, 0);
   unsigned int out_ix = 0;
 
@@ -68,7 +77,7 @@ std::vector<unsigned int> BinStr2UintVec(std::string inbin) {
   char *w = new char[2];
   for (auto it = inbin.crbegin(); it != inbin.crend(); ++it) {
     w[0] = *it;
-    w[1] = '\0';  // null terminate
+    w[1] = '\0'; // null terminate
     out_bits[out_ix] = std::stoi(w);
     out_ix++;
   }
@@ -77,7 +86,7 @@ std::vector<unsigned int> BinStr2UintVec(std::string inbin) {
 }
 
 std::string UintVec2str(std::vector<unsigned int> in) {
-  unsigned int in_len = in.size();  // number of bits
+  unsigned int in_len = in.size(); // number of bits
   std::string outstr;
   std::cout << "in ";
   for (auto i : in) {
@@ -109,18 +118,18 @@ std::string UintVec2str(std::vector<unsigned int> in) {
 
 void parse_inputs(int argc, char **argv, bool *assemble_flag,
                   bool *gen_fan_flag, bool *analyze_flag, bool *verbose,
-                  lbcrypto::BINFHE_PARAMSET *set, lbcrypto::BINFHE_METHOD *method,
-                  unsigned int *n_cases, unsigned int *num_test_loops) {
+                  lbcrypto::BINFHE_PARAMSET *set,
+                  lbcrypto::BINFHE_METHOD *method, unsigned int *n_cases,
+                  unsigned int *num_test_loops) {
   // manage the command line args
-  int opt;  // option from command line parsing
+  int opt; // option from command line parsing
 
   std::string usage_string =
       std::string("run ") + std::string(argv[0]) +
       std::string(
           " demo with settings (default value show in parenthesis):\n") +
-      std::string(
-          "-a assemble flag (false) note, if true then analyze must be "
-          "true\n") +
+      std::string("-a assemble flag (false) note, if true then analyze must be "
+                  "true\n") +
       std::string("-f fanout generation flag (false)\n") +
       std::string("-z analyze flag (false)\n") +
       std::string("-c # test cases [4]\n") +
@@ -138,71 +147,71 @@ void parse_inputs(int argc, char **argv, bool *assemble_flag,
     std::string method_str;
 
     switch (opt) {
-      case 'a':
-        *assemble_flag = true;
-        std::cout << "assembling" << std::endl;
-        break;
-      case 'f':
-        *gen_fan_flag = true;
-        std::cout << "fan_flag true" << std::endl;
-        break;
-      case 'z':
-        *analyze_flag = true;
-        std::cout << "analyzing" << std::endl;
-        break;
-      case 's':
-        set_str = optarg;
-        if (set_str == "STD128_OPT") {
-          *set = lbcrypto::STD128_OPT;
-          std::cout << "using STD128 OPT" << std::endl;
-        } else if (set_str == "TOY") {
-          *set = lbcrypto::TOY;
-          std::cout << "using TOY" << std::endl;
-        } else {
-          std::cerr << "Error Bad Set chosen" << std::endl;
-          exit(-1);
-        }
-        break;
-      case 'm':
-        method_str = optarg;
-        if (method_str == "GINX") {
-          *method = lbcrypto::GINX;
-          std::cout << "using GINX" << std::endl;
-        } else if (method_str == "AP") {
-          *method = lbcrypto::AP;
-          std::cout << "using AP" << std::endl;
-        } else {
-          std::cerr << "Error Bad Method chosen" << std::endl;
-          exit(-1);
-        }
-        break;
-      case 'c':
-        n_cases_in = atoi(optarg);
-        if (n_cases_in < 0) {
-          *n_cases = 1;
-        } else {
-          *n_cases = n_cases_in;
-        }
-        std::cout << "n_cases set to " << *n_cases << std::endl;
-        break;
-      case 'n':
-        num_test_loops_in = atoi(optarg);
-        if (num_test_loops_in < 0) {
-          *num_test_loops = 1;
-        } else {
-          *num_test_loops = num_test_loops_in;
-        }
-        std::cout << "num_test_loops set to " << *num_test_loops << std::endl;
-        break;
-      case 'v':
-        *verbose = true;
-        std::cout << "verbose" << std::endl;
-        break;
-      case 'h':
-      default: /* '?' */
-        std::cout << usage_string << std::endl;
-        exit(0);
+    case 'a':
+      *assemble_flag = true;
+      std::cout << "assembling" << std::endl;
+      break;
+    case 'f':
+      *gen_fan_flag = true;
+      std::cout << "fan_flag true" << std::endl;
+      break;
+    case 'z':
+      *analyze_flag = true;
+      std::cout << "analyzing" << std::endl;
+      break;
+    case 's':
+      set_str = optarg;
+      if (set_str == "STD128_OPT") {
+        *set = lbcrypto::STD128_OPT;
+        std::cout << "using STD128 OPT" << std::endl;
+      } else if (set_str == "TOY") {
+        *set = lbcrypto::TOY;
+        std::cout << "using TOY" << std::endl;
+      } else {
+        std::cerr << "Error Bad Set chosen" << std::endl;
+        exit(-1);
+      }
+      break;
+    case 'm':
+      method_str = optarg;
+      if (method_str == "GINX") {
+        *method = lbcrypto::GINX;
+        std::cout << "using GINX" << std::endl;
+      } else if (method_str == "AP") {
+        *method = lbcrypto::AP;
+        std::cout << "using AP" << std::endl;
+      } else {
+        std::cerr << "Error Bad Method chosen" << std::endl;
+        exit(-1);
+      }
+      break;
+    case 'c':
+      n_cases_in = atoi(optarg);
+      if (n_cases_in < 0) {
+        *n_cases = 1;
+      } else {
+        *n_cases = n_cases_in;
+      }
+      std::cout << "n_cases set to " << *n_cases << std::endl;
+      break;
+    case 'n':
+      num_test_loops_in = atoi(optarg);
+      if (num_test_loops_in < 0) {
+        *num_test_loops = 1;
+      } else {
+        *num_test_loops = num_test_loops_in;
+      }
+      std::cout << "num_test_loops set to " << *num_test_loops << std::endl;
+      break;
+    case 'v':
+      *verbose = true;
+      std::cout << "verbose" << std::endl;
+      break;
+    case 'h':
+    default: /* '?' */
+      std::cout << usage_string << std::endl;
+      exit(0);
     }
   }
-  *assemble_flag = true && *analyze_flag;  // cant assemble without analysis
+  *assemble_flag = true && *analyze_flag; // cant assemble without analysis
 }
