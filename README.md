@@ -37,9 +37,7 @@ https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html
 
 These inputs are in `examples/old_bristol_ckts`.
 
-Newer bristol fashion circuits will be supported soon. Some might work already.
-
-Next on the list is to support BLIF format.
+Newer bristol fashion circuits are planned to be supported soon. Some might work already.
 
 See the Todo list at the bottom of the file.
 
@@ -59,7 +57,9 @@ Add FF and clocked circuits
 Todo:
 -----
 
-* Note: code to analyze reuse of registers/nodes is broken. so is code to compute ciruit depth, as it is not needed for FHEW. may want to rewrite analysis/assembler/circuit code.
+* Note: code to analyze reuse of registers/nodes is broken. so is code
+  to compute ciruit depth, as it is not needed for FHEW. may want to
+  rewrite analysis/assembler/circuit code.
 
 * Add and test new bristol fashion format
 <https://homes.esat.kuleuven.be/~nsmart/MPC/>
@@ -80,7 +80,7 @@ also we need to eventually check out
 
 * Speed up circuit management representation, possibly with linked list
 
-* add command line flags for other parameter sets afforded by OPENFHE
+* add command line flags for other parameter sets afforded by OpenFHE
 
 Building the system
 -------------------
@@ -153,14 +153,24 @@ Note the following command line flags are valid (defaults shown in [ ].
 -z analyze flag (false)
 -c # test cases [4]
 -n # test loops [10]
--s parameter set (TOY|STD128) [STD128]
--m method (AP|GINX) [AP] 
+-s parameter set (TOY|STD128_OPT) [STD128_OPT]
+-m method (AP|GINX) [GINX] 
 -v verbose flag (false)
+
+h prints this message
+
 ```
 
 > Note that for these two simple examples the `-a -f -z -c` flags, while listed, have no effect.
 
-Also note that PALISADE supports other settings for parameter set, which will be added in later releases.
+It is easiest to run from your `build` directory as follows:
+` cd build`
+
+`bin/TB_adder_2bit -s STD128_OPT -m GINX -v`
+
+
+Also note that OpenFHE supports other settings for parameter set,
+which will be added in later releases.
 
 Running Complicated Examples
 ============================
@@ -169,13 +179,23 @@ There are currently four more complex examples in order of increasing run time.
 - `TB_comparators` - tests old bristol style comparator circuits
 - `TB_adders` - tests old bristol style adder circuits
 - `TB_multipliers` -  tests old bristol style adder circuits
-- `TB_crypto` - tests old bristol style adder circuits
+- `TB_crypto` - tests old bristol style md5 and sha circuits
+- `TB_aes` - tests old bristol style AES expanded and non-expanded circuits
 
-For all examples you should run the program with the `-a -z` flags set
+
+For all examples you should run the program once with the `-a -z` flags set
 in order to generate assembler output. The assembler output for input
 case `foo.txt` will be `foo_FHE.out`. The FHE is to indicate that
 there is no impled circuit depth limit, i.e. no explicit bootstrapping
-will be needed. This is a holdover from an older SHE system design. 
+will be needed. This is a holdover from an older SHE system design.
+
+Note that the `-s TOY` setting can be used when assembling the
+circuit, as the result is indepenent of the crypto parameter
+used. `TOY` is only good for debugging and verifying functional
+correctness -- it has no security!
+
+Once these files are generated you can run that demo case with
+different settings, without the `-a -z` flags set.
 
 More details on each demo:
 --------------------------
@@ -195,17 +215,26 @@ less-than-or-equal comparisons.
 `TB_multipliers` runs the single `mult_32x32.txt` test case.
 
 `TB_crypto` runs the `md5.txt` and `sha-256.txt` test cases. Note
-that while other crypto curciuts are in the
-`examples/old_bristol_ckts/crypto` directory, we do not have test
-vectors for any of them, so we did not build any test bench programs. 
+these take a long time to run typically.
+
+`TB_aes` runs the `AES-expanded.txt` and `AES-non-expanded.txt` test
+cases. Note these take a VERY long time to run typically.
+
+
+Note that while other crypto curciuts are in the
+`examples/old_bristol_ckts/crypto` directory, we currently do not have
+test vectors for any of them, so we did not build any test bench
+programs.
 
 We suggest that for these larger cases, you run on a multicore machine
-with at least 8 GB ram. The encrypted circuit evaluator will evaluate excrypted gates 
-in parallel, up to the number of OMP threads specified through the environment variable
-(the default is usually the number of cpus on the system).
+with at least 8 GB ram. The encrypted circuit evaluator will evaluate
+excrypted gates in parallel, up to the number of OMP threads specified
+through the environment variable (the default is usually the number of
+cpus on the system).
 
-Also note that the current netlist generator is not very efficient, so that large circuits such
-as the crypto circuits take a very long time to set up. This is something on the list to optimize.
+Also note that the current netlist generator is not very efficient, so
+that large circuits such as the crypto circuits take a very long time
+to set up. This is something on the list of things to optimize.
 
 Acknowledgements: 
 -----------------
@@ -214,3 +243,4 @@ This system has been developed with support from the DARPA MARSHALL
 program. Portions of the code were based on MATLAB code previously
 developed for the DARPA PROCEED program.
 
+The port of this system to OpenFHE was funded by Duality Technologies.
