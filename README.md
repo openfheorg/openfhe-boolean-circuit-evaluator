@@ -114,13 +114,18 @@ install a specific version of the compiler. You can use `g++
 --version` to check the version of `g++` that is the current system
 default.
 
-2. Install OPENFHE on your system. This code was tested with pre-release 1.10.3. Note we have not tested the circuit emulator with the 32 bit build of OPENFHE.
+2. Install OPENFHE on your system. This code was tested with
+   pre-release 1.10.3. Note we have not tested the circuit emulator
+   with the 32 bit build of OPENFHE, though it should run fine for `STD128_OPT`.
 
-Full instructions for this are to be found in the `README.md` file in the [OPENFHE repo](https://github.com/openfheorg/openfhe-development).
+Full instructions for this are to be found in the `README.md` file in
+the [OPENFHE repo](https://github.com/openfheorg/openfhe-development).
 
 Run `make install` at the end to install the system to the default
 location (you can change this location, but then you will have to
-change the Makefile in this repo to reflect the new location).
+change the Makefile in this repo to reflect the new location with 
+
+`$  cmake -DCMAKE_INSTALL_PREFIX=[insert your install directory] ..`
 
 3. Clone this repo onto your system.
 
@@ -186,23 +191,26 @@ There are currently four more complex examples in order of increasing run time.
 - `TB_comparators` - tests old bristol style comparator circuits
 - `TB_adders` - tests old bristol style adder circuits
 - `TB_multipliers` -  tests old bristol style adder circuits
-- `TB_crypto` - tests old bristol style md5 and sha circuits
+- `TB_md5` - tests old bristol style md5 circuit
+- `TB_SHA256` - tests old bristol style sha256 circuits
 - `TB_aes` - tests old bristol style AES expanded and non-expanded circuits
 
 
-For all examples you should run the program once with the `-a -z` flags set
-in order to generate assembler output. The assembler output for input
-case `foo.txt` will be `foo_FHE.out`. The FHE is to indicate that
-there is no impled circuit depth limit, i.e. no explicit bootstrapping
-will be needed. This is a holdover from an older SHE system design.
+For all examples you should run the program once with the `-a -z`
+flags set in order to generate assembler output. The assembler output
+for input case `foo.txt` will be `foo_FHE.out`. The FHE is to indicate
+that there is no impled circuit depth limit, i.e. no explicit
+bootstrapping will be needed. This is a holdover from an older SHE
+system design. Note the output files are stored in the
+`build\examples` directory tree.
 
 Note that the `-s TOY` setting can be used when assembling the
 circuit, as the result is indepenent of the crypto parameter
 used. `TOY` is only good for debugging and verifying functional
-correctness -- it has no security!
+correctness -- it has *NO* security!
 
 Once these files are generated you can run that demo case with
-different settings, without the `-a -z` flags set.
+different settings, without the `-a -z` flags set. 
 
 More details on each demo:
 --------------------------
@@ -221,8 +229,11 @@ less-than-or-equal comparisons.
 
 `TB_multipliers` runs the single `mult_32x32.txt` test case.
 
-`TB_crypto` runs the `md5.txt` and `sha-256.txt` test cases. Note
-these take a long time to run typically.
+`TB_md5` runs the `md5.txt` test case from the crypto directory. Note:
+this takes a long time to run typically.
+
+`TB_sha256` runs the `sha-256.txt` test case from the crypto
+directory. Note: this takes a long time to run typically.
 
 `TB_aes` runs the `AES-expanded.txt` and `AES-non-expanded.txt` test
 cases. Note these take a VERY long time to run typically.
