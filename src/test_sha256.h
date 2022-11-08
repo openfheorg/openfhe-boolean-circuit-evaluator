@@ -1,4 +1,4 @@
-// @file test_crypto.h -- test code for encrypted crypto circuits
+// @file test_sha256.h -- test code for encrypted sha256 circuits
 //==================================================================================
 // BSD 2-Clause License
 //
@@ -30,15 +30,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //==================================================================================
 
-#ifndef TEST_CRYPTO_H
-#define TEST_CRYPTO_H
+#ifndef TEST_SHA256_H
+#define TEST_SHA256_H
 
 #include "binfhecontext.h"
 #include <string>
 #include <vector>
 
 // function declaration
-bool test_crypto(std::string outputFname, unsigned int num_test_loops,
+bool test_sha256(std::string outputFname, unsigned int num_test_loops,
                  lbcrypto::BINFHE_PARAMSET set, lbcrypto::BINFHE_METHOD method);
 
 #endif

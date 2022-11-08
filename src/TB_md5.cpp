@@ -1,4 +1,4 @@
-// @file TB_adders.cpp -- Test bed for encrypted crypto circuits
+// @file TB_md5.cpp -- Test bed for encrypted md5 crypto circuits
 //==================================================================================
 // BSD 2-Clause License
 //
@@ -34,7 +34,7 @@
 //
 //
 // Test Bench script to parse and assemble  circuits for
-// example crypto functions provided by
+// md5 example crypto function provided by
 // <https://homes.esat.kuleuven.be/~nsmart/MPC/>, and then run and test the
 // result with an encrypted circuit evaluator.
 //
@@ -46,7 +46,8 @@
 //
 // Version History:
 //   original matlab  started 12/12/2012 by D. Cousins
-//   current version started 7/20/2012 by D. Cousins dcousins@njit.edu
+//   PALISADE version 7/20/2012 by D. Cousins dcousins@njit.edu
+//   11/7/2022 TB_crypto split into TB_md5 and TB_sha256 to reduce runtime
 
 // Known Issues:
 
@@ -63,17 +64,17 @@
 
 #include "analyze.h"
 #include "assemble.h"
-#include "test_crypto.h"
+#include "test_md5.h"
 #include "utils.h"
 
 int main(int argc, char **argv) {
-  std::cout << "Test bench for cryptos " << std::endl;
+  std::cout << "Test bench for md5 " << std::endl;
 
   bool analyze_flag = false;
   bool gen_fan_flag = false;
   bool assemble_flag = true && analyze_flag; // cant assemble without analysis
 
-  unsigned int n_cases = 2;
+  unsigned int n_cases = 1;
   unsigned int num_test_loops = 10;
 
   lbcrypto::BINFHE_PARAMSET set(lbcrypto::STD128_OPT);
@@ -82,6 +83,10 @@ int main(int argc, char **argv) {
 
   parse_inputs(argc, argv, &assemble_flag, &gen_fan_flag, &analyze_flag,
                &verbose, &set, &method, &n_cases, &num_test_loops);
+  //note n_cases is ignored
+  if (n_cases != 1) {
+	std::cout << "Note n_cases is ignored for this Test Bench" <<std::endl;
+  }
 
   std::string inputFname;
   std::string outputFname;
@@ -90,67 +95,47 @@ int main(int argc, char **argv) {
       0; // max depth supported before bootstrap needed  0 means FHE
 
   bool new_flag(false);
-  bool all_passed = true;
-  for (unsigned int i = 0; i < n_cases; i++) {
-    switch (i) {
-    case 0:
-      dirPath = "examples/old_bristol_ckts/crypto";
-      inputFname = "md5.txt";
-      outputFname = "md5_";
-      break;
-    case 1:
-      dirPath = "examples/old_bristol_ckts/crypto";
-      inputFname = "sha-256.txt";
-      outputFname = "sha-256_";
-      break;
-    default:
-      std::cout << "bad case number:" << i << std::endl;
-      exit(-1);
-    }
-    if (max_depth == 0) {
-      outputFname = outputFname + "FHE.out";
-    } else {
-      outputFname = outputFname + std::to_string(max_depth) + ".out";
-    }
 
-    Analysis analysis_result;
-    // analyze the circuit file for the case
-    inputFname = dirPath + "/" + inputFname;
-    outputFname = dirPath + "/" + outputFname;
-    if (analyze_flag) {
-      std::cout << "analyzing " << inputFname << std::endl;
-      analysis_result = analyze_bristol(inputFname, gen_fan_flag, new_flag);
-    }
+  dirPath = "examples/old_bristol_ckts/crypto";
+  inputFname = "md5.txt";
+  outputFname = "md5_";
 
-    if (assemble_flag) {
-      // generate assembler
-      bool debug_flag = true; // annotate assembler output
-
-      //  now assemble note this writes out a new version of .out
-
-      std::cout << "assembling " << inputFname << std::endl;
-      assemble_bristol(analysis_result, max_depth, debug_flag);
-    }
-
-    insureFileExists(outputFname);
-
-    bool passed;
-    passed = test_crypto(outputFname, num_test_loops, set, method);
-    all_passed = all_passed && passed;
-
-    std::cout << "===========================" << std::endl;
-    std::cout << outputFname << " ";
-    if (passed) {
-      std::cout << " passes" << std::endl;
-    } else {
-      std::cout << " fails" << std::endl;
-    }
-  } // loop over case i
-  std::cout << "===========================" << std::endl;
-  if (all_passed) {
-    std::cout << "All Crypto cases passed" << std::endl;
+  if (max_depth == 0) {
+	outputFname = outputFname + "FHE.out";
   } else {
-    std::cout << "Some Crypto cases failed" << std::endl;
+	outputFname = outputFname + std::to_string(max_depth) + ".out";
+  }
+  
+  Analysis analysis_result;
+  // analyze the circuit file for the case
+  inputFname = dirPath + "/" + inputFname;
+  outputFname = dirPath + "/" + outputFname;
+  if (analyze_flag) {
+	std::cout << "analyzing " << inputFname << std::endl;
+	analysis_result = analyze_bristol(inputFname, gen_fan_flag, new_flag);
+  }
+  
+  if (assemble_flag) {
+	// generate assembler
+	bool debug_flag = true; // annotate assembler output
+	
+	//  now assemble note this writes out a new version of .out
+	
+	std::cout << "assembling " << inputFname << std::endl;
+	assemble_bristol(analysis_result, max_depth, debug_flag);
+  }
+  
+  insureFileExists(outputFname);
+  
+  bool passed;
+  passed = test_md5(outputFname, num_test_loops, set, method);
+  
+  std::cout << "===========================" << std::endl;
+  std::cout << outputFname << " ";
+  if (passed) {
+	std::cout << " passes" << std::endl;
+  } else {
+	std::cout << " fails" << std::endl;
   }
   std::cout << "===========================" << std::endl;
 }

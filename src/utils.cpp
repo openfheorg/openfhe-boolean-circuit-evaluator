@@ -132,7 +132,7 @@ void parse_inputs(int argc, char **argv, bool *assemble_flag,
                   "true\n") +
       std::string("-f fanout generation flag (false)\n") +
       std::string("-z analyze flag (false)\n") +
-      std::string("-c # test cases [4]\n") +
+      std::string("-c # test cases (not used in all TB programs\n") +
       std::string("-n # test loops [10]\n") +
       std::string("-s parameter set (TOY|STD128_OPT) [STD128_OPT]\n") +
       std::string("-m method (AP|GINX) [GINX] \n") +
