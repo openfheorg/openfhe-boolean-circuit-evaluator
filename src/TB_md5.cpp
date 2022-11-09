@@ -2,7 +2,8 @@
 //==================================================================================
 // BSD 2-Clause License
 //
-// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other contributors
+// Copyright (c) 2014-2022, NJIT, Duality Technologies Inc. and other
+// contributors
 //
 // All rights reserved.
 //
@@ -11,7 +12,8 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice, this
+// 1. Redistributions of source code must retain the above copyright notice,
+// this
 //    list of conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,14 +22,15 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //==================================================================================
 //
 
@@ -83,9 +86,9 @@ int main(int argc, char **argv) {
 
   parse_inputs(argc, argv, &assemble_flag, &gen_fan_flag, &analyze_flag,
                &verbose, &set, &method, &n_cases, &num_test_loops);
-  //note n_cases is ignored
+  // note n_cases is ignored
   if (n_cases != 1) {
-	std::cout << "Note n_cases is ignored for this Test Bench" <<std::endl;
+    std::cout << "Note n_cases is ignored for this Test Bench" << std::endl;
   }
 
   std::string inputFname;
@@ -101,41 +104,41 @@ int main(int argc, char **argv) {
   outputFname = "md5_";
 
   if (max_depth == 0) {
-	outputFname = outputFname + "FHE.out";
+    outputFname = outputFname + "FHE.out";
   } else {
-	outputFname = outputFname + std::to_string(max_depth) + ".out";
+    outputFname = outputFname + std::to_string(max_depth) + ".out";
   }
-  
+
   Analysis analysis_result;
   // analyze the circuit file for the case
   inputFname = dirPath + "/" + inputFname;
   outputFname = dirPath + "/" + outputFname;
   if (analyze_flag) {
-	std::cout << "analyzing " << inputFname << std::endl;
-	analysis_result = analyze_bristol(inputFname, gen_fan_flag, new_flag);
+    std::cout << "analyzing " << inputFname << std::endl;
+    analysis_result = analyze_bristol(inputFname, gen_fan_flag, new_flag);
   }
-  
+
   if (assemble_flag) {
-	// generate assembler
-	bool debug_flag = true; // annotate assembler output
-	
-	//  now assemble note this writes out a new version of .out
-	
-	std::cout << "assembling " << inputFname << std::endl;
-	assemble_bristol(analysis_result, max_depth, debug_flag);
+    // generate assembler
+    bool debug_flag = true; // annotate assembler output
+
+    //  now assemble note this writes out a new version of .out
+
+    std::cout << "assembling " << inputFname << std::endl;
+    assemble_bristol(analysis_result, max_depth, debug_flag);
   }
-  
+
   insureFileExists(outputFname);
-  
+
   bool passed;
   passed = test_md5(outputFname, num_test_loops, set, method);
-  
+
   std::cout << "===========================" << std::endl;
   std::cout << outputFname << " ";
   if (passed) {
-	std::cout << " passes" << std::endl;
+    std::cout << " passes" << std::endl;
   } else {
-	std::cout << " fails" << std::endl;
+    std::cout << " fails" << std::endl;
   }
   std::cout << "===========================" << std::endl;
 }
