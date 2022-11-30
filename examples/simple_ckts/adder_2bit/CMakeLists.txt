@@ -1,0 +1,1 @@
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/adder_2bit.out  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)

@@ -1,0 +1,7 @@
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/adder_32bit.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/adder_64bit.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/comparator_32bit_signed_lt.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/comparator_32bit_signed_lteq.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/comparator_32bit_unsigned_lt.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/comparator_32bit_unsigned_lteq.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mult_32x32.txt  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)

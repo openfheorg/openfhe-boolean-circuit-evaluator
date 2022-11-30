@@ -1,0 +1,1 @@
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/parity.out  ${CMAKE_CURRENT_BINARY_DIR}/. COPYONLY)
