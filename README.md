@@ -1,4 +1,4 @@
-Encrypted Boolean Circuit Emulator
+Encrypted Boolean Circuit Evaluator
 ==================================
 
 ![OpenFHE_logo](logo.png "OpenFHE")
@@ -100,13 +100,14 @@ instructions.  It's recommended to use at least Ubuntu 18.04, and gnu g++ 7 or g
 
 
 1. Install pre-requisites (if not already installed):
-`g++`, `cmake`, `make`, and `autoconf`. Sample commands using `apt-get` are listed below. It is possible that these are already installed on your system.
+`g++`, `cmake`, `make`, `autoconf`, `boost`. Sample commands using `apt-get` are listed below. It is possible that these are already installed on your system.
 
 ```bash
 $ sudo apt-get install build-essential #this already includes g++`
 $ sudo apt-get install autoconf
 $ sudo apt-get install make
 $ sudo apt-get install cmake
+$ sudo apt-get install libboost-all-dev
 ```
 
 > Note that `sudo apt-get install g++-<version>` can be used to
